@@ -1,0 +1,182 @@
+
+#include <iostream>
+
+using namespace std;
+
+int N;
+
+void printBoard(int *t)
+{
+    cout<<"\n\n\t|";
+    for(int i=0;i<2*N+1;i++)
+    {
+            if(*t == 1)
+            {
+                cout<<"R|";
+            }
+            else if(*t == -1)
+            {
+                cout<<"G|";
+            }
+            else
+            {
+                cout<<" _ |";
+            }
+            t++;
+    }
+    cout<<"\n\n";
+}
+
+bool canMove(int *t, int i)
+{
+    int fl=0;
+    //cout<<"\n---------------"<<i<<"--------------------\n";
+    if((*(t+i) == 1 && *(t+i+1) == 333) || (*(t+i) == 1 && *(t+i+1) == -1 && *(t+i+2) == 333))
+    {
+            fl = 1;
+    }
+    if((*(t+i) == -1 && *(t+i-1) == 333) || (*(t+i) == -1 && *(t+i-1) == 1 && *(t+i-2) == 333))
+    {
+            fl = 1;
+    }
+    if(fl == 1)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+int* makeMove(int *t, int i)
+{
+    int *newt = new int[2*N+1];
+    int *t1=t;
+    int *t2=newt;
+    for(int j=0; j<2*N+1; j++)
+    {
+        *t2=*t1;
+        t1++;
+        t2++;
+    }
+    //printBoard(newt);
+    if((*(t+i) == 1 && *(t+i+1) == 333))
+    {
+        *(newt+i) = 333;
+        *(newt+i+1) = 1;
+    }
+    if((*(t+i) == 1 && *(t+i+1) == -1 && *(t+i+2) == 333))
+    {
+        *(newt+i) = 333;
+        *(newt+i+2) = 1;
+    }
+    if((*(t+i) == -1 && *(t+i-1) == 333))
+    {
+        *(newt+i) = 333;
+        *(newt+i-1) = -1;
+    }
+    if((*(t+i) == -1 && *(t+i-1) == 1 && *(t+i-2) == 333))
+    {
+        *(newt+i) = 333;
+        *(newt+i-2) = -1;
+    }
+    // The line below prints every intermediate Board state.
+    //printBoard(newt);
+    return newt;
+}
+
+bool isSolved(int *t)
+{
+    int fl = 0;
+    for(int i = 0; i < N; i++)
+    {
+        if(*t != -1)
+        {
+            fl = 1;
+        }
+        t++;
+    }
+    if(*t != 333)
+    {
+        fl = 1;
+        t++;
+    }
+    for(int i=0; i < N; i++)
+    {
+        if(*t == 1)
+        {
+            fl = 1;
+            t++;
+        }
+    }
+    if(fl == 0)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+bool isSolvable(int *t)
+{
+    if(isSolved(t))
+    {
+        return true;
+    }
+    for(int i = 0; i < 2*N+1; i++)
+    {
+        if(canMove(t,i))
+        {
+            int *newt = makeMove(t,i);
+            if(isSolvable(newt))
+            {
+                printBoard(newt);
+                return true;
+            }
+            delete[] newt;
+        }
+    }
+    return false;
+}
+
+int main()
+{
+    cout<<"\nEnter the Size of N (N > 0) : ";
+    cin >> N;
+    int *p = new int[2*N+1];
+    int *temp=p;
+    for(int i=0;i<N;i++)
+    {
+        *temp=1;
+        temp++;
+    }
+    *temp=333;
+    temp++;
+    for(int i=0;i<N;i++)
+    {
+        *temp=-1;
+        temp++;
+    }
+    cout<<"\nBoard Initial Position \n\n";
+    printBoard(p);
+    cout<<"\nThe sequence of Moves to solve the Puzzle are printed in the Reverse Order \n\n";
+    cout<<"\n########################################\n\n";
+    int s = isSolvable(p);
+    if(s == false)
+    {
+        cout<<"\nThe Puzzle is unsolvable for N = "<<N<<". :( :( :( \n\n";
+    }
+    else
+    {
+        printBoard(p);
+    }
+    cout<<"\n########################################\n\n";
+    delete[] p;
+    return 0;
+}
+
+cindy.cpp
+Displaying cindy.cpp.
